@@ -11,7 +11,7 @@ import TimelapseIcon from "@mui/icons-material/Timelapse";
 import AdjustIcon from "@mui/icons-material/Adjust";
 import Loader from "../components/Loader";
 
-import { db } from "./firebase-config";
+import { db } from "../config/FirebaseConfig";
 import { getDocs, collection } from "firebase/firestore";
 
 var options = { year: 'numeric', month: 'long', day: 'numeric' };

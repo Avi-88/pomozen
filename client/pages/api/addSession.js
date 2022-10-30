@@ -1,5 +1,5 @@
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase-config";
+import { db } from "../../config/FirebaseConfig";
 
 export default async function sessionHandler(req, res) {
   if (req.method === "POST") {

@@ -8,7 +8,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
-import { auth , db} from "./firebase-config";
+import { auth , db} from "../config/FirebaseConfig";
 import { connect } from "react-redux";
 import Router from "next/router";
 
