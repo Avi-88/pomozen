@@ -2,10 +2,10 @@ import React from "react";
 
 function SessionTab(props) {
   return (
-    <div className="w-full">
+    <div className="sml:w-full w-11/12">
       <div className="grid grid-cols-5 w-full px-2 text-white sml:p-4 sml:my-0 my-2">
         <div className="col-span-3 justify-center items-center ml-px flex">
-          <p className="sml:text-lg text-sm">{props.index}</p>
+          <p className="sml:text-lg text-sm ml-px">{props.index}</p>
           <p className="flex-1 justify-center flex sml:text-lg text-sm">
             {props.item.sessionDate}
           </p>
@@ -23,19 +23,7 @@ function SessionTab(props) {
           </p>
         </div>
       </div>
-      <div className="hidden">
-        <div className="grid grid-cols-5 w-full p-2 sml:px-4 text-white">
-          <div className="col-span-3 flex justify-start items-center ml-px ">
-            <p className=" sml:text-lg text-sm mr-4">#</p>
-            <p className="flex-1 justify-center flex sml:text-sm mid:text-base text-xs break-all">
-              fhbweiuhfiowehfoihfowhuowhgoiuwhgouhwoighwoighwoighoiwehiowhfwhfwehgoiwhgoihweiofjwoighoiwhjgiorjg
-            </p>
-          </div>
-          <div className="col-span-2 flex justify-center items-center sml:text-sm mid:text-base text-xs">
-            COMPLETED
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }

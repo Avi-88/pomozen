@@ -1,4 +1,5 @@
 import { useEffect,useState , useRef} from "react";
+import { connect } from 'react-redux';
 import Head from "next/head";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
@@ -9,15 +10,19 @@ import AlarmOnIcon from "@mui/icons-material/AlarmOn";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import AdjustIcon from "@mui/icons-material/Adjust";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import IconButton from '@mui/material/IconButton';
 import Loader from "../components/Loader";
+import _ from 'lodash';
 
-import { db } from "./firebase-config";
-import { getDocs, collection } from "firebase/firestore";
+import { db } from "../config/FirebaseConfig";
+import { getDocs, collection, query ,orderBy } from "firebase/firestore";
 
 var options = { year: 'numeric', month: 'long', day: 'numeric' };
 var date  = new Date();
 
-const history = () => {
+const history = (props) => {
 
   const [data, setData] = useState([]);
 
@@ -27,6 +32,8 @@ const history = () => {
   const allTimeTotal = useRef(0);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [paginatedList, setPaginatedList] = useState([]);
 
   useEffect(() => {
     try {
@@ -34,10 +41,11 @@ const history = () => {
         const colRef = collection(
           db,
           "userdata",
-          "htGFyJkRsiOT9IG3I9xY9Qcsj6N2",
+          props.currentUser.id,
           "sessions"
         );
-        const querySnapshot = await getDocs(colRef);
+        const q = query(colRef, orderBy("sessionDate", "asc"));
+        const querySnapshot = await getDocs(q);
         const filterData = async (querySnapshot)=>{
           querySnapshot.forEach((doc) => {
             if(doc.data().sessionDate === date.toLocaleDateString("en-US", options)){
@@ -53,11 +61,42 @@ const history = () => {
         setIsLoading(false);
       };
 
-      fetchSessions();
+      if(props.currentUser.isLoggedIn){
+        fetchSessions();
+      }
     } catch (error) {
         alert(error);
     }
   }, []);
+
+  useEffect(()=>{
+    setPaginatedList(_(data)?.slice(0).take(pageSize).value());
+  },[data]);
+  
+  
+  useEffect(()=>{
+    const startIndex = (currentPage - 1)*pageSize;
+    const paginated = _(data)?.slice(startIndex).take(pageSize).value();
+    setPaginatedList(paginated);
+  },[currentPage , data]);
+  
+  const pageSize = 5;
+  
+  const pageCount = data ? Math.ceil(data.length/pageSize) : 0;
+  
+  const pages = _.range(1, pageCount+1);
+  
+  const paginationNext = () =>{
+    if(currentPage < pages.length){
+      setCurrentPage(prevValue => prevValue + 1 );
+    }
+  };
+  
+  const paginationPrevious = () =>{
+    if(currentPage > 1){
+      setCurrentPage(prevValue => prevValue - 1 );
+    }
+  };
 
 
   return (
@@ -71,9 +110,9 @@ const history = () => {
         <TopNav />
       </header>
       <div className="min-h-screen w-full flex flex-col justify-center items-center">
-      {isLoading ? <Loader/> : (
+      {props.currentUser.isLoggedIn ? isLoading ? <Loader/> : (
       <div className="min-h-screen w-full flex flex-col justify-start sml:p-6 items-center">
-      <div className="grid mid:grid-cols-2 p-6 sml:p-0 sml:grid-cols-2 gap-6 lar:w-3/5 mid:w-4/5 w-full">
+      <div className="grid grid-cols-2 p-6 sml:p-0   gap-6 lar:w-3/5 mid:w-4/5 w-full">
         <StatCard
           title="Today's Focus"
           value={today.current}
@@ -127,13 +166,13 @@ const history = () => {
           }
         />
       </div>
-      <div className="lar:w-3/5 mid:w-4/5 w-full flex justify-start items-center py-6 flex-col">
+      <div className="lar:w-3/5 mid:w-4/5 w-full flex justify-start items-center pb-4 sml:py-6 flex-col">
         <div className="flex flex-col w-full justify-center items-center ">
           <p className="bg-gradient-to-r  mb-4 mt-2 font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent text-xl font-kumbh tracking-widest whitespace-nowrap">
             SESSIONS
           </p>
-          <div className="grid grid-cols-5 p-2 w-full sml:p-4 sml:my-0 my-2 text-white firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-md  bg-white">
-            <div className="col-span-3 justify-center items-center  flex">
+          <div className="grid grid-cols-5 p-2 sml:w-full w-11/12 sml:p-4 sml:my-0 my-2 text-white firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-md  bg-white">
+            <div className="col-span-3 ml-px justify-center items-center  flex">
               <p className="">#</p>
               <p className="flex-1 justify-center flex">DATE</p>
             </div>
@@ -151,12 +190,21 @@ const history = () => {
             </div>
           </div>
         </div>
-        {data.map((item, index)=>{
+        {paginatedList.map((item, index)=>{
           return(<SessionTab key={index} index={index+1} item={item} />)
         })}
+        <div className="flex justify-center items-center mt-6 space-x-4">
+          <IconButton className='text-slate-400' onClick={paginationPrevious}>
+            <NavigateBeforeIcon className='text-slate-400 hover:text-white ' sx={{width:35,height:35}}/>
+          </IconButton>
+          <p className="text-white text-semibold">{currentPage}</p>
+          <IconButton className='text-slate-400 ' onClick={paginationNext}>
+            <NavigateNextIcon className='text-slate-400 hover:text-white ' sx={{width:35,height:35}}/>
+          </IconButton>
+        </div>
       </div>
     </div>
-)}
+) : <div className="text-white text-lg font-bold p-8 text-center w-full"><p>You need to be logged in to view session history</p></div>}
       </div>
       <footer className="w-10/12">
         <Footer />
@@ -165,4 +213,17 @@ const history = () => {
   );
 };
 
-export default history;
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.user,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => dispatch({ type: "SET_USER", value: user }),
+  };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(history);

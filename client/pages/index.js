@@ -46,7 +46,7 @@ function Home(props) {
         inputProps={{ 'aria-label': 'controlled' }}
         sx={{
           '& .Mui-checked': {
-            color: theme === 'ocean' ? 'cyan' : theme === 'rain' ? 'orange' : 'green'
+            color: theme === 'ocean' ? 'cyan' : theme === 'rain' ? '#ff8c00' : 'green'
         },
         '& .MuiSwitch-track': {
             backgroundColor:'white !important'
@@ -55,7 +55,7 @@ function Home(props) {
         />
         <label className={'font-kumbh tracking-widest font-bold bg-clip-text text-transparent ' + (theme==='ocean' ? ' bg-gradient-to-r from-slate-500 to-yellow-100' : theme === 'rain' ? 'bg-gradient-to-r from-yellow-600 to-red-600' : 'bg-gradient-to-r from-emerald-500 to-lime-600')}>BREAK</label>
         </div>
-        <div className='flex justify-center items-center lar:w-4/12 lar:h-4/12 mid:w-4/12 mid:h-4/12'>
+        <div className='flex justify-center items-center lar:w-3/12 lar:h-3/12 mid:w-4/12 mid:h-4/12'>
           <Timer
           startColor={theme === 'ocean' ? "white" : theme === 'rain' ? '#A27B5C' : 'lightgray'}
           midColor={theme === 'ocean' ? "#00FFFF" : theme === 'rain' ? '#3F4E4F' : '#145314'}
@@ -66,7 +66,7 @@ function Home(props) {
           />
         </div>
 
-        <div className='flex p-2 justify-center rounded-md w-11/12 sml:w-8/12 mid:w-5/12  text-white bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm items-center mt-4'>
+        <div className='flex p-2 justify-center rounded-md w-full sml:w-8/12 mid:w-5/12  text-white bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm items-center mt-4'>
           <TodoList/>
         </div>
       </div>
