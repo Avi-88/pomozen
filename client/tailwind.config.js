@@ -24,6 +24,8 @@ module.exports = {
 
       'lar': '1240px',
       // => @media (min-width: 1280px) { ... }
+
+      'xLar': '1320px',
     },
     fontFamily: {
       'kumbh':['Kumbh Sans', 'sans-serif']

@@ -2,7 +2,7 @@ import * as actionTypes from "../types";
 import { v1 as uuidv1 } from 'uuid';
 
 const initialState = {
-    user:{email:null},
+    user:{isLoggedIn:false},
     sessionTime : 25,
     currentTime:1500,
     breakTime : 5,

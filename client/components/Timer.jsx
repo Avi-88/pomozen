@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { v1 as uuidv1 } from 'uuid';
+import { v1 as uuidv1 } from "uuid";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Settings from "./Settings";
@@ -15,102 +15,33 @@ const Timer = (props) => {
   const [isStopped, setIsStopped] = useState(true);
   const [secondsLeft, setSecondsLeft] = useState(0);
 
-var options = { year: 'numeric', month: 'long', day: 'numeric' };
-var today  = new Date();
+  var options = { year: "numeric", month: "long", day: "numeric" };
+  var today = new Date();
 
   const isPausedRef = useRef(isPaused);
   const isStoppedRef = useRef(isStopped);
   const time = useRef(props.mode ? props.breakTime * 60 : props.currentTime);
 
-  const initTimer = () => {
-    setSecondsLeft(props.mode ? props.breakTime * 60 : props.currentTime);
-    time.current = props.mode ? props.breakTime * 60 : props.currentTime;
-  };
+  const totalSeconds = props.mode
+    ? props.breakTime * 60
+    : props.sessionTime * 60;
+  const percentage = Math.round((secondsLeft / totalSeconds) * 100);
 
-  const modeSwitch = () => {
-    setSecondsLeft(props.mode ? props.breakTime * 60 : props.sessionTime * 60);
-    time.current = props.mode ? props.breakTime * 60 : props.sessionTime * 60;
-    props.setCurrent(time.current);
-  };
+  let minutes = Math.floor(secondsLeft / 60);
+  if (minutes < 10) minutes = "0" + minutes;
+  let seconds = secondsLeft % 60;
+  if (seconds < 10) seconds = "0" + seconds;
+
+  let gradientTransform = `rotate(${props.rotation})`;
 
   useEffect(() => {
     modeSwitch();
-  },[props.mode])
-
-  const handlePause = (e) => {
-    e.preventDefault();
-    isPausedRef.current = !isPausedRef.current;
-    setIsPaused(isPausedRef.current);
-    props.setCurrent(time.current);
-  };
-
-  // const handleSessionRegistering = async ()=>{
-  //   const sessionId = uuidv1();
-  //   const sessionRef = doc(db, "userdata", props.currentUser.id ,"sessions", sessionId);
-
-  //   await setDoc(sessionRef, {
-  //     sessionLength: props.sessionTime * 60,
-  //     focusTime: props.sessionTime * 60 - time.current,
-  //     tasks: props.tasks,
-  //     sessionDate: today.toLocaleDateString("en-US", options)
-  //   })
-  // }
-
-  const handleStop = () => {
-    isPausedRef.current = !isPausedRef.current;
-    isStoppedRef.current = !isStoppedRef.current;
-    setIsPaused(isPausedRef.current);
-    props.running(isStoppedRef.current);
-    setIsStopped(isStoppedRef.current);
-  };
-
-  const handleEndSession = async () => {
-    handleStop();
-
-    if (props.currentUser && !props.mode) {
-      const sessionId = uuidv1();
-      const sessionRef = doc(db, "userdata", props.currentUser.id ,"sessions", sessionId);
-
-      await setDoc(sessionRef, {
-        sessionLength: props.sessionTime * 60,
-        focusTime: props.sessionTime * 60 - time.current,
-        tasks: props.tasks,
-        sessionDate: today.toLocaleDateString("en-US", options)
-      })
-      sessionReset();
-    } else {
-      sessionReset();
-    }
-  };
-
-
-  const sessionReset = () => {
-    if(props.mode){
-      props.setMode(!props.mode);
-      time.current = props.sessionTime * 60; 
-      setSecondsLeft(time.current);
-      props.setCurrent(time.current);
-      isPausedRef.current = true;
-      setIsPaused(isPausedRef.current);
-    } else {
-      props.setMode(!props.mode);
-      time.current =  props.breakTime * 60;
-      setSecondsLeft(time.current);
-      props.setCurrent(time.current);
-      isPausedRef.current = true;
-      setIsPaused(isPausedRef.current);
-    }
-  };
-
-  const tick = () => {
-    time.current--;
-    setSecondsLeft(time.current);
-  };
+  }, [props.mode]);
 
   useEffect(() => {
     initTimer();
 
-    const clock = setInterval(async() => {
+    const clock = setInterval(async () => {
       if (isPausedRef.current) {
         return;
       }
@@ -125,17 +56,79 @@ var today  = new Date();
     return () => clearInterval(clock);
   }, [props.sessionTime, props.breakTime]);
 
-  const totalSeconds = props.mode
-    ? props.breakTime * 60
-    : props.sessionTime * 60;
-  const percentage = Math.round((secondsLeft / totalSeconds) * 100);
+  const handlePause = (e) => {
+    e.preventDefault();
+    isPausedRef.current = !isPausedRef.current;
+    setIsPaused(isPausedRef.current);
+    props.setCurrent(time.current);
+  };
 
-  let minutes = Math.floor(secondsLeft / 60);
-  if (minutes < 10) minutes = "0" + minutes;
-  let seconds = secondsLeft % 60;
-  if (seconds < 10) seconds = "0" + seconds;
+  const handleStop = () => {
+    isPausedRef.current = !isPausedRef.current;
+    isStoppedRef.current = !isStoppedRef.current;
+    setIsPaused(isPausedRef.current);
+    props.running(isStoppedRef.current);
+    setIsStopped(isStoppedRef.current);
+  };
 
-  let gradientTransform = `rotate(${props.rotation})`;
+  const handleEndSession = async () => {
+    handleStop();
+
+    if (props.currentUser.isLoggedIn && !props.mode) {
+      const sessionId = uuidv1();
+      const sessionRef = doc(
+        db,
+        "userdata",
+        props.currentUser.id,
+        "sessions",
+        sessionId
+      );
+
+      await setDoc(sessionRef, {
+        sessionLength: props.sessionTime * 60,
+        focusTime: props.sessionTime * 60 - time.current,
+        tasks: props.tasks,
+        sessionDate: today.toLocaleDateString("en-US", options),
+      });
+      sessionReset();
+    } else {
+      sessionReset();
+    }
+  };
+
+  const sessionReset = () => {
+    if (props.mode) {
+      props.setMode(!props.mode);
+      time.current = props.sessionTime * 60;
+      setSecondsLeft(time.current);
+      props.setCurrent(time.current);
+      isPausedRef.current = true;
+      setIsPaused(isPausedRef.current);
+    } else {
+      props.setMode(!props.mode);
+      time.current = props.breakTime * 60;
+      setSecondsLeft(time.current);
+      props.setCurrent(time.current);
+      isPausedRef.current = true;
+      setIsPaused(isPausedRef.current);
+    }
+  };
+
+  const tick = () => {
+    time.current--;
+    setSecondsLeft(time.current);
+  };
+
+  const initTimer = () => {
+    setSecondsLeft(props.mode ? props.breakTime * 60 : props.currentTime);
+    time.current = props.mode ? props.breakTime * 60 : props.currentTime;
+  };
+
+  const modeSwitch = () => {
+    setSecondsLeft(props.mode ? props.breakTime * 60 : props.sessionTime * 60);
+    time.current = props.mode ? props.breakTime * 60 : props.sessionTime * 60;
+    props.setCurrent(time.current);
+  };
 
   return (
     <div className="flex  flex-col justify-center items-center w-full h-full">
@@ -175,7 +168,7 @@ var today  = new Date();
           />
         </div>
 
-        <div className="absolute inset-x-auto lar:top-24 top-14">
+        <div className="absolute inset-x-auto  top-14">
           <SoundSettings theme={props.theme} />
         </div>
 
@@ -189,16 +182,16 @@ var today  = new Date();
               : "bg-gradient-to-br from-lime-600 via-green-700 to-emerald-900")
           }
         >
-          <p className="text-transparent font-bold lar:text-9xl mid:text-8xl text-7xl">
+          <p className="text-transparent font-bold xLar:text-8xl  text-7xl">
             {minutes + ":" + seconds}
           </p>
         </div>
 
-        <div className="absolute  w-40 flex justify-center items-center inset-x-auto lar:bottom-20 bottom-14">
+        <div className="absolute  w-40 flex justify-center items-center inset-x-auto lar:bottom-14 bottom-14">
           {isStoppedRef.current ? (
             <button
               className={
-                "w-min bg-clip-text text-transparent p-2 rounded-md font-bold lar:text-3xl text-2xl hover:opacity-60 " +
+                "w-min bg-clip-text text-transparent p-2 rounded-md font-bold lar:text-2xl text-2xl hover:opacity-60 " +
                 (props.theme === "ocean"
                   ? "bg-gradient-to-r from-cyan-200 to-cyan-400"
                   : props.theme === "rain"
@@ -254,7 +247,7 @@ const mapStateToProps = (state) => {
     breakTime: state.breakTime,
     theme: state.theme,
     tasks: state.tasks,
-    mode: state.mode
+    mode: state.mode,
   };
 };
 

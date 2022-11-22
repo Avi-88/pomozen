@@ -1,6 +1,5 @@
 import '../styles/globals.css'
 
-import '../styles/clock.css'
 
 import { createStore } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
