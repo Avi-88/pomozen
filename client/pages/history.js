@@ -1,5 +1,5 @@
-import { useEffect,useState , useRef} from "react";
-import { connect } from 'react-redux';
+import { useEffect, useState, useRef } from "react";
+import { connect } from "react-redux";
 import Head from "next/head";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
@@ -10,20 +10,19 @@ import AlarmOnIcon from "@mui/icons-material/AlarmOn";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import AdjustIcon from "@mui/icons-material/Adjust";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import IconButton from '@mui/material/IconButton';
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import IconButton from "@mui/material/IconButton";
 import Loader from "../components/Loader";
-import _ from 'lodash';
+import _ from "lodash";
 
 import { db } from "../config/FirebaseConfig";
-import { getDocs, collection, query ,orderBy } from "firebase/firestore";
+import { getDocs, collection, query, orderBy } from "firebase/firestore";
 
-var options = { year: 'numeric', month: 'long', day: 'numeric' };
-var date  = new Date();
+var options = { year: "numeric", month: "long", day: "numeric" };
+var date = new Date();
 
 const history = (props) => {
-
   const [data, setData] = useState([]);
 
   const today = useRef(0);
@@ -32,7 +31,7 @@ const history = (props) => {
   const allTimeTotal = useRef(0);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [currentPage, setCurrentPage] = useState(1);
   const [paginatedList, setPaginatedList] = useState([]);
 
   useEffect(() => {
@@ -46,58 +45,59 @@ const history = (props) => {
         );
         const q = query(colRef, orderBy("sessionDate", "asc"));
         const querySnapshot = await getDocs(q);
-        const filterData = async (querySnapshot)=>{
+        const filterData = async (querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            if(doc.data().sessionDate === date.toLocaleDateString("en-US", options)){
-              today.current= today.current+1;
+            if (
+              doc.data().sessionDate ===
+              date.toLocaleDateString("en-US", options)
+            ) {
+              today.current = today.current + 1;
               todayTotal.current = todayTotal.current + doc.data().focusTime;
             }
-            allTime.current = allTime.current +1;
+            allTime.current = allTime.current + 1;
             allTimeTotal.current = allTimeTotal.current + doc.data().focusTime;
-            setData(prevItem => [...prevItem , doc.data()])
+            setData((prevItem) => [...prevItem, doc.data()]);
           });
-        }
+        };
         await filterData(querySnapshot);
         setIsLoading(false);
       };
 
-      if(props.currentUser.isLoggedIn){
+      if (props.currentUser.isLoggedIn) {
         fetchSessions();
       }
     } catch (error) {
-        alert(error);
+      alert(error);
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setPaginatedList(_(data)?.slice(0).take(pageSize).value());
-  },[data]);
-  
-  
-  useEffect(()=>{
-    const startIndex = (currentPage - 1)*pageSize;
+  }, [data]);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * pageSize;
     const paginated = _(data)?.slice(startIndex).take(pageSize).value();
     setPaginatedList(paginated);
-  },[currentPage , data]);
-  
+  }, [currentPage, data]);
+
   const pageSize = 5;
-  
-  const pageCount = data ? Math.ceil(data.length/pageSize) : 0;
-  
-  const pages = _.range(1, pageCount+1);
-  
-  const paginationNext = () =>{
-    if(currentPage < pages.length){
-      setCurrentPage(prevValue => prevValue + 1 );
-    }
-  };
-  
-  const paginationPrevious = () =>{
-    if(currentPage > 1){
-      setCurrentPage(prevValue => prevValue - 1 );
+
+  const pageCount = data ? Math.ceil(data.length / pageSize) : 0;
+
+  const pages = _.range(1, pageCount + 1);
+
+  const paginationNext = () => {
+    if (currentPage < pages.length) {
+      setCurrentPage((prevValue) => prevValue + 1);
     }
   };
 
+  const paginationPrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevValue) => prevValue - 1);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-700 via-gray-900 to-black justify-start items-center">
@@ -110,101 +110,134 @@ const history = (props) => {
         <TopNav />
       </header>
       <div className="min-h-screen w-full flex flex-col justify-center items-center">
-      {props.currentUser.isLoggedIn ? isLoading ? <Loader/> : (
-      <div className="min-h-screen w-full flex flex-col justify-start sml:p-6 items-center">
-      <div className="grid grid-cols-2 p-6 sml:p-0   gap-6 lar:w-3/5 mid:w-4/5 w-full">
-        <StatCard
-          title="Today's Focus"
-          value={today.current}
-          icon={
-            <AdjustIcon
-              sx={{
-                width: 35,
-                height: 35,
-                color: "white",
-              }}
-            />
-          }
-        />
-        <StatCard
-          title="Today's Focus Time"
-          value={`${Math.floor(todayTotal.current / 60)} mins`}
-          icon={
-            <AlarmOnIcon
-              sx={{
-                width: 35,
-                height: 35,
-                color: "white",
-              }}
-            />
-          }
-        />
-        <StatCard
-          title="Total Focus"
-          value={allTime.current}
-          icon={
-            <TimelapseIcon
-              sx={{
-                width: 35,
-                height: 35,
-                color: "white",
-              }}
-            />
-          }
-        />
-        <StatCard
-          title="Total Focus Time"
-          value={`${Math.floor(allTimeTotal.current / 60)} mins`}
-          icon={
-            <MoreTimeIcon
-              sx={{
-                width: 35,
-                height: 35,
-                color: "white",
-              }}
-            />
-          }
-        />
-      </div>
-      <div className="lar:w-3/5 mid:w-4/5 w-full flex justify-start items-center pb-4 sml:py-6 flex-col">
-        <div className="flex flex-col w-full justify-center items-center ">
-          <p className="bg-gradient-to-r  mb-4 mt-2 font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent text-xl font-kumbh tracking-widest whitespace-nowrap">
-            SESSIONS
-          </p>
-          <div className="grid grid-cols-5 p-2 sml:w-full w-11/12 sml:p-4 sml:my-0 my-2 text-white firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-md  bg-white">
-            <div className="col-span-3 ml-px justify-center items-center  flex">
-              <p className="">#</p>
-              <p className="flex-1 justify-center flex">DATE</p>
-            </div>
-            <div className="col-span-1  justify-center text-center items-center flex">
-              <p className="hidden sml:block">FOCUS</p>
-              <div className="sml:hidden block">
-                <AlarmOnIcon />
+        {props.currentUser.isLoggedIn ? (
+          isLoading ? (
+            <Loader />
+          ) : (
+            <div className="min-h-screen w-full flex flex-col justify-start sml:p-6 items-center">
+              <div className="grid grid-cols-2 p-6 sml:p-0   gap-6 lar:w-6/12  sml:w-4/5 w-full">
+                <StatCard
+                  title="Today's Focus"
+                  value={today.current}
+                  icon={
+                    <AdjustIcon
+                      sx={{
+                        width: 35,
+                        height: 35,
+                        color: "white",
+                      }}
+                    />
+                  }
+                />
+                <StatCard
+                  title="Today's Focus Time"
+                  value={`${Math.floor(todayTotal.current / 60)} mins`}
+                  icon={
+                    <AlarmOnIcon
+                      sx={{
+                        width: 35,
+                        height: 35,
+                        color: "white",
+                      }}
+                    />
+                  }
+                />
+                <StatCard
+                  title="Total Focus"
+                  value={allTime.current}
+                  icon={
+                    <TimelapseIcon
+                      sx={{
+                        width: 35,
+                        height: 35,
+                        color: "white",
+                      }}
+                    />
+                  }
+                />
+                <StatCard
+                  title="Total Focus Time"
+                  value={`${Math.floor(allTimeTotal.current / 60)} mins`}
+                  icon={
+                    <MoreTimeIcon
+                      sx={{
+                        width: 35,
+                        height: 35,
+                        color: "white",
+                      }}
+                    />
+                  }
+                />
+              </div>
+              <div className="lar:w-6/12 sml:w-4/5 w-full flex justify-start items-center pb-4 sml:py-6 flex-col">
+                <div className="flex flex-col w-full justify-center items-center ">
+                  <p className="bg-gradient-to-r  mb-4 mt-2 font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent text-lg font-kumbh tracking-widest whitespace-nowrap">
+                    SESSIONS
+                  </p>
+                  <div className="grid grid-cols-5 p-2 sml:w-full w-11/12 sml:p-4 sml:my-0 my-2 text-white firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-md  bg-white">
+                    <div className="col-span-3 ml-px justify-center items-center  flex">
+                      <p className="">#</p>
+                      <p className="flex-1 justify-center flex text-sm">DATE</p>
+                    </div>
+                    <div className="col-span-1  justify-center text-center items-center flex">
+                      <p className="hidden sml:block text-sm">FOCUS</p>
+                      <div className="sml:hidden block">
+                        <AlarmOnIcon />
+                      </div>
+                    </div>
+                    <div className="col-span-1 justify-center text-center items-center flex">
+                      <p className="hidden sml:block text-sm">SESSION</p>
+                      <div className="sml:hidden block">
+                        <AccessAlarmsIcon />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mid:min-h-[250px]  min-h-[200px]  text-gray-500 sml:w-full w-11/12">
+                  {paginatedList.length != 0 ? (
+                    paginatedList.map((item, index) => {
+                      return (
+                        <SessionTab key={index} index={index + 1} item={item} />
+                      );
+                    })
+                  ) : (
+                    <div className="mid:min-h-[248px]  min-h-[198px]  w-full flex justify-center items-center">
+                      <p className="text-xs sml:text-sm">No sessions registered yet, start focusing 🎯</p>
+                    </div>
+                  )}
+                </div>
+
+                {paginatedList.length != 0 && (
+                  <div className="flex justify-center items-center mt-6 space-x-4">
+                    <IconButton
+                      className="text-slate-400"
+                      onClick={paginationPrevious}
+                    >
+                      <NavigateBeforeIcon
+                        className="text-slate-400 hover:text-white "
+                        sx={{ width: 35, height: 35 }}
+                      />
+                    </IconButton>
+                    <p className="text-white text-semibold">{currentPage}</p>
+                    <IconButton
+                      className="text-slate-400 "
+                      onClick={paginationNext}
+                    >
+                      <NavigateNextIcon
+                        className="text-slate-400 hover:text-white "
+                        sx={{ width: 35, height: 35 }}
+                      />
+                    </IconButton>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="col-span-1 justify-center text-center items-center flex">
-              <p className="hidden sml:block">SESSION</p>
-              <div className="sml:hidden block">
-                <AccessAlarmsIcon />
-              </div>
-            </div>
+          )
+        ) : (
+          <div className="text-white text-lg font-bold p-8 text-center w-full">
+            <p>You need to be logged in to view session history</p>
           </div>
-        </div>
-        {paginatedList.map((item, index)=>{
-          return(<SessionTab key={index} index={index+1} item={item} />)
-        })}
-        <div className="flex justify-center items-center mt-6 space-x-4">
-          <IconButton className='text-slate-400' onClick={paginationPrevious}>
-            <NavigateBeforeIcon className='text-slate-400 hover:text-white ' sx={{width:35,height:35}}/>
-          </IconButton>
-          <p className="text-white text-semibold">{currentPage}</p>
-          <IconButton className='text-slate-400 ' onClick={paginationNext}>
-            <NavigateNextIcon className='text-slate-400 hover:text-white ' sx={{width:35,height:35}}/>
-          </IconButton>
-        </div>
-      </div>
-    </div>
-) : <div className="text-white text-lg font-bold p-8 text-center w-full"><p>You need to be logged in to view session history</p></div>}
+        )}
       </div>
       <footer className="w-10/12">
         <Footer />
@@ -212,7 +245,6 @@ const history = (props) => {
     </div>
   );
 };
-
 
 const mapStateToProps = (state) => {
   return {
@@ -226,4 +258,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(history);
+export default connect(mapStateToProps, mapDispatchToProps)(history);

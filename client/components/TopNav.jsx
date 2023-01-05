@@ -11,7 +11,7 @@ const TopNav = (props) => {
   const [drop, setDrop] = useState(false);
 
   return (
-    <div className="text-white p-2 bg-gray-600 w-full firefox:bg-opacity-60 flex justify-center items-center  bg-opacity-20 backdrop-filter backdrop-blur-sm">
+    <div className="text-white p-2 bg-gray-600 w-full firefox:bg-opacity-60 flex justify-center items-center  bg-opacity-20 backdrop-filter backdrop-blur-md">
       <ul className="flex justify-around items-center p-2">
         <li className="px-8 py-1 ">
           <Link href="/">

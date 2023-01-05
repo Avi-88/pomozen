@@ -9,10 +9,10 @@ function StatCard(props) {
         </div>
       </div>
       <div className="flex justify-around mt-2 sml:mt-0 h-full items-end w-full flex-col px-2">
-        <p className="text-white font-semibold text-left sml:text-right text-sm sml:text-base  w-full">
+        <p className="text-white font-semibold text-left sml:text-right text-sm mid:text-base  w-full">
           {props.title}
         </p>
-        <p className="text-white font-bold  text-xl sml:text-2xl">
+        <p className="text-white font-bold  text-xl sml:text-xl">
           {props.value}
         </p>
       </div>
