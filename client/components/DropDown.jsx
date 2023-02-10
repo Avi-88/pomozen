@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
-import { auth } from "../pages/firebase-config";
+import { auth } from "../config/FirebaseConfig";
 import { connect } from "react-redux";
 import { signOut } from "firebase/auth";
 

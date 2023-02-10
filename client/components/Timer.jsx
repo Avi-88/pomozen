@@ -8,7 +8,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { connect } from "react-redux";
 import SoundSettings from "./SoundSettings";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../pages/firebase-config";
+import { db } from "../config/FirebaseConfig";
 
 const Timer = (props) => {
   const [isPaused, setIsPaused] = useState(true);

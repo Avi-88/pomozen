@@ -113,18 +113,19 @@ const SoundSettings = (props) => {
               paddingVertical: 4,
               paddingHorizontal: 6,
               border: "1px solid gray",
+              borderRadius: 20,
               minWidth: "300px",
             },
           }}
           fullWidth
         >
-          <DialogTitle className="text-center text-transparent bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text  ">
-            <p className="font-kumbh font-bold tracking-widest ">SETTINGS</p>
+          <DialogTitle className="text-center text-transparent bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text">
+            <p className="font-kumbh font-bold tracking-widest">SETTINGS</p>
           </DialogTitle>
           <DialogContent>
             <div className="p-2">
               <div className="mb-6 sml:m-0 bg-gradient-to-r font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent font-kumbh tracking-widest whitespace-nowrap">
-                <p>SET AMBIENCE :</p>
+                <p className="text-sm sml:text-lg">SET AMBIENCE :</p>
               </div>
               <div className=" flex justify-around items-center">
                 {props.theme === "ocean" ? (

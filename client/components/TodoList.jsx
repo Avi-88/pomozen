@@ -38,6 +38,11 @@ const TodoList = (props) => {
             id="exampleFormControlInput1"
             placeholder="Tasks . . ."
             onChange={handleTask}
+            onKeyDown={(e) => {
+              if(e.key == 'Enter'){
+                addTask(e);
+              }
+            }}
             value={task}
             autoComplete="off"
             required
@@ -78,22 +83,24 @@ const TodoList = (props) => {
         {props.tasks?.map((task, index) => {
           return (
             <div key={index} className="py-3 flex justify-between items-center">
-              <div className="w-2/4 ">
+              <div className="flex-1 mr-4 overflow-hidden">
                 <p
                   className={
-                    "break-words  whitespace-normal " +
-                    (task?.status === true ? "line-through" : "")
+                    "break-words text-sm whitespace-normal " +
+                    (task?.status === true ? "line-through text-gray-300" : "")
                   }
                 >
                   {task?.content}
                 </p>
               </div>
-              <div>
+              <div className="flex justify-around items-center">
                 <IconButton
                   className="opacity-50 hover:opacity-100"
                   size="small"
                   onClick={() => props.setStatus(task?.id)}
                   sx={{
+                    height:30,
+                    width:30,
                     color: "white",
                     border: 2,
                     borderColor:
@@ -102,18 +109,19 @@ const TodoList = (props) => {
                         : props.theme === "rain"
                         ? "#9a3412"
                         : "green",
-                    marginRight: 1,
+                    marginRight: 1.5,
                   }}
                   aria-label="upload picture"
                   component="span"
                 >
-                  <DoneIcon />
+                  <DoneIcon sx={{heigth:20, width:20}}  />
                 </IconButton>
                 <IconButton
                   className="opacity-50 hover:opacity-100"
-                  size="small"
                   onClick={() => props.deleteTask(task?.id)}
                   sx={{
+                    height:30,
+                    width:30,
                     color: "white",
                     border: 2,
                     borderColor:
@@ -126,7 +134,7 @@ const TodoList = (props) => {
                   aria-label="upload picture"
                   component="span"
                 >
-                  <DeleteIcon />
+                  <DeleteIcon sx={{heigth:20, width:20}} />
                 </IconButton>
               </div>
             </div>

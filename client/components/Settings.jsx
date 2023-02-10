@@ -75,13 +75,14 @@ const Settings = (props) => {
               paddingVertical: 4,
               paddingHorizontal: 6,
               border: "1px solid gray",
+              borderRadius:20,
               minWidth: "300px",
             },
           }}
           fullWidth
         >
           <DialogTitle className="text-center text-transparent bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text  ">
-            <p className="font-kumbh font-bold tracking-widest ">SETTINGS</p>
+            <p className="font-kumbh font-bold tracking-widest">SETTINGS</p>
           </DialogTitle>
           <DialogContent
             className="overflow-hidden"
@@ -91,14 +92,14 @@ const Settings = (props) => {
           >
             <div className="p-2 ">
               <div className="mb-6 sml:m-0 bg-gradient-to-r font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent font-kumbh tracking-widest whitespace-nowrap">
-                <p>SET TIMER :</p>
+                <p className="text-sm sml:text-lg">SET TIMER :</p>
               </div>
               <div className=" flex flex-col   sml:flex-row sml:justify-around items-center">
                 <div className="sml:w-10/12 w-full flex justify-around items-center">
                   <input
                     className="w-full slider"
                     type="range"
-                    min="1"
+                    min="5"
                     max="120"
                     value={session}
                     onChange={handleSessionTimeChange}
@@ -113,7 +114,7 @@ const Settings = (props) => {
 
             <div className="p-2">
               <div className="mb-6 sml:m-0 bg-gradient-to-r font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent font-kumbh tracking-widest whitespace-nowrap">
-                <p>SET BREAK TIMER :</p>
+                <p className="text-sm sml:text-lg">SET BREAK TIMER :</p>
               </div>
               <div className=" flex flex-col   sml:flex-row sml:justify-around items-center">
                 <div className="sml:w-10/12 w-full flex justify-around items-center">
@@ -135,7 +136,7 @@ const Settings = (props) => {
 
             <div className="p-2">
               <div className="sml:mb-6 sml:m-0 bg-gradient-to-r font-semibold from-fuchsia-500 via-red-600 to-orange-400 bg-clip-text text-transparent font-kumbh tracking-widest whitespace-nowrap">
-                <p>SET THEME :</p>
+                <p className="text-sm sml:text-lg">SET THEME :</p>
               </div>
               <div className=" flex justify-around items-center">
                 <input

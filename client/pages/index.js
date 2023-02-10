@@ -38,7 +38,7 @@ function Home(props) {
       <header className='w-full sticky top-0 z-10'><TopNav/></header>
 
       <div className='flex justify-center items-center flex-col min-h-screen p-6  w-full'>
-        <div className='p-4 mb-4 rounded-full flex justify-center border border-gray-500 items-center bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm'>
+        <div className='p-4 mb-4 rounded-full flex justify-center border border-gray-500 items-center bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-md'>
         <label className={'font-kumbh tracking-widest font-bold bg-clip-text text-transparent ' + (theme==='ocean' ? ' bg-gradient-to-r from-slate-500 to-yellow-100' : theme === 'rain' ? 'bg-gradient-to-r from-yellow-600 to-red-600' : 'bg-gradient-to-r from-emerald-500 to-lime-600')}>WORK</label>  
         <Switch
         checked={props.mode}
@@ -46,7 +46,7 @@ function Home(props) {
         inputProps={{ 'aria-label': 'controlled' }}
         sx={{
           '& .Mui-checked': {
-            color: theme === 'ocean' ? 'cyan' : theme === 'rain' ? '#ff8c00' : 'green'
+            color: theme === 'ocean' ? 'cyan' : theme === 'rain' ? '#ea580c' : 'green'
         },
         '& .MuiSwitch-track': {
             backgroundColor:'white !important'
@@ -66,7 +66,7 @@ function Home(props) {
           />
         </div>
 
-        <div className='flex p-2 justify-center rounded-md w-full sml:w-8/12 mid:w-5/12  text-white bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-sm items-center mt-4'>
+        <div className='flex p-2 justify-center rounded-md w-full sml:w-6/12 mid:w-4/12  text-white bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-md items-center mt-4'>
           <TodoList/>
         </div>
       </div>
