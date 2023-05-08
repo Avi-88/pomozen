@@ -40,7 +40,7 @@ function Home(props) {
       <div className='flex justify-center items-center flex-col min-h-screen p-6  w-full'>
         <div className='p-4 mb-4 rounded-full flex justify-center border border-gray-500 items-center bg-gray-600  firefox:bg-opacity-60  bg-opacity-20 backdrop-filter backdrop-blur-md'>
         <label className={'font-kumbh tracking-widest font-bold bg-clip-text text-transparent ' + (theme==='ocean' ? ' bg-gradient-to-r from-slate-500 to-yellow-100' : theme === 'rain' ? 'bg-gradient-to-r from-yellow-600 to-red-600' : 'bg-gradient-to-r from-emerald-500 to-lime-600')}>WORK</label>  
-        <Switch
+        {/* <Switch
         checked={props.mode}
         onChange={handleChange}
         inputProps={{ 'aria-label': 'controlled' }}
@@ -52,7 +52,7 @@ function Home(props) {
             backgroundColor:'white !important'
         }
         }}
-        />
+        /> */}
         <label className={'font-kumbh tracking-widest font-bold bg-clip-text text-transparent ' + (theme==='ocean' ? ' bg-gradient-to-r from-slate-500 to-yellow-100' : theme === 'rain' ? 'bg-gradient-to-r from-yellow-600 to-red-600' : 'bg-gradient-to-r from-emerald-500 to-lime-600')}>BREAK</label>
         </div>
         <div className='flex justify-center items-center lar:w-3/12 lar:h-3/12 mid:w-4/12 mid:h-4/12'>
